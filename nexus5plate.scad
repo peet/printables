@@ -4,7 +4,7 @@ $fn=35;
 t = 0.4;
 
 // rounded corner radius
-roundness = 15;
+roundness = 7;
 
 //magnet dimensions
 mag_d = 10;
@@ -38,14 +38,23 @@ pcb_seperation = 5;
 usb_w = 10;
 usb_h = 5;
 
+//pcb mount holes
+pcb_hole_radius= 1;
+pcb_hole_t=12;
+pcb_hole_b=-12;
+pcb_hole_l=-27;
+pcb_hole_r=27;
+
 //starting box dimensions
 width = max(pcb_w, coil_d) + 5;
 height = max(pcb_h, coil_d) + 5;
-thickness = closeness + mag_t + coil_t + pcb_t+10;
+thickness = closeness + mag_t + coil_t + pcb_t+10 + 2*coil_wire_t;
 
 //pcbAssembly();
 body();
 //coilAssembly();
+
+//pcb_holes();
 
 module body(){
 	difference() {	
@@ -61,28 +70,45 @@ module body(){
 
 module coilAssembly(){
 	translate([0, 0, closeness + mag_t]){
-		translate([0, 0,coil_wire_t])
-			cylinder(d=coil_d + 2 * t, h=thickness);
+		translate([0, 0,coil_wire_t]){
+			translate([0, 0,coil_wire_t])
+				cylinder(d=coil_d + 2 * t, h=thickness);
 
-		cylinder(d=coil_wire_d + 2 * t, h=thickness);
+			cylinder(d=coil_wire_d + 2 * t, h=thickness);		
+		}
+			translate([-coil_wire_t, 0,0])
+				cube([2*coil_wire_t,coil_d/2+coil_wire_t,coil_wire_t*2]);	
 
-		translate([-coil_wire_t, 0,0])
-			cube([2*coil_wire_t,coil_d/2+coil_wire_t,coil_wire_t]);	
-
-		translate([-coil_wire_t, coil_d/2,0])
-			cube([2*coil_wire_t,coil_wire_t,thickness+coil_wire_t]);				
+			translate([-coil_wire_t, coil_d/2,0])
+				cube([2*coil_wire_t,coil_wire_t,thickness+coil_wire_t*2]);		
 	}
 }
 
-module pcbAssembly(){
-	translate([0,0,closeness + mag_t + coil_t  + pcb_seperation]){
-		translate([-pcb_w/2, -height/2 + pcb_from_edge, 0])
+module pcbAssembly(){	
+	translate([0,
+			  pcb_h/2 - height/2 + pcb_from_edge,
+			  closeness + mag_t + coil_t +2*coil_wire_t + pcb_seperation]){
+
+		translate([-pcb_w/2, -pcb_h/2 , 0])
 			cube([pcb_w,pcb_h,pcb_t+height]);
 
-		translate([-usb_w/2,-height/2-10,0])
+		translate([-usb_w/2, -pcb_h/2-10,0])
 			cube([usb_w,pcb_h,usb_h]);
 
-	}
+		translate([0,0,-(mag_t + coil_t  + pcb_seperation)])
+			pcb_holes();
+	}	
+}
+
+module pcb_holes(){
+  translate([pcb_hole_l, pcb_hole_t, 0])
+    cylinder(r= pcb_hole_radius + t, h=thickness);
+  translate([pcb_hole_r, pcb_hole_t, 0])
+    cylinder(r= pcb_hole_radius + t, h=thickness);
+  translate([pcb_hole_l, pcb_hole_b, 0])
+    cylinder(r= pcb_hole_radius + t, h=thickness);
+  translate([pcb_hole_r, pcb_hole_b, 0])
+    cylinder(r= pcb_hole_radius + t, h=thickness);
 }
 
 module magnets(){
