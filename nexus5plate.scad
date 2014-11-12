@@ -23,32 +23,32 @@ closeness = 0.4;
 coil_d = 50;
 coil_t = 3;
 
-coil_wire_d=40;
-coil_wire_t=2;
+coil_wire_d=43;
+coil_wire_t=1;
 
 //charging pcb dimensions
 pcb_w = 62;
 pcb_h = 39;
-pcb_t = 3;
+pcb_t = 5;
 
 pcb_from_edge = 7;
-pcb_seperation = 5;
+pcb_seperation = 1;
 
 //micro usb dimensions
 usb_w = 10;
 usb_h = 5;
 
 //pcb mount holes
-pcb_hole_radius= 1;
-pcb_hole_t=12;
-pcb_hole_b=-12;
-pcb_hole_l=-27;
-pcb_hole_r=27;
+pcb_hole_radius= 1.5;
+pcb_hole_t= pcb_h/2 -3;
+pcb_hole_b= -(pcb_h/2 -9);
+pcb_hole_l=-(pcb_w/2 -2.5);
+pcb_hole_r=pcb_w/2 -2.5;
 
 //starting box dimensions
 width = max(pcb_w, coil_d) + 5;
 height = max(pcb_h, coil_d) + 5;
-thickness = closeness + mag_t + coil_t + pcb_t+10 + 2*coil_wire_t;
+thickness = closeness + mag_t + coil_t + pcb_t+ pcb_seperation + 2*coil_wire_t;
 
 //pcbAssembly();
 body();
@@ -93,7 +93,7 @@ module pcbAssembly(){
 			cube([pcb_w,pcb_h,pcb_t+height]);
 
 		translate([-usb_w/2, -pcb_h/2-10,0])
-			cube([usb_w,pcb_h,usb_h]);
+			cube([usb_w,pcb_h,usb_h + t]);
 
 		translate([0,0,-(mag_t + coil_t  + pcb_seperation)])
 			pcb_holes();
