@@ -1,4 +1,4 @@
-$fn=35;
+$fn=50;
 
 //tollerance
 t = 0.4;
@@ -39,7 +39,10 @@ usb_w = 7;
 usb_h = 3;
 
 //pcb mount holes
-pcb_hole_radius= 1.5;
+pcb_hole_radius= .5;
+pcb_hole_bevel_radius=1;
+pcb_hole_bevel_depth=1;
+
 pcb_hole_t= pcb_h/2 -3;
 pcb_hole_b= -(pcb_h/2 -9);
 pcb_hole_l=-(pcb_w/2 -2.5);
@@ -95,20 +98,28 @@ module pcbAssembly(){
 		translate([-usb_w/2, -pcb_h/2-10,0])
 			cube([usb_w, pcb_h, usb_h + t]);
 
-		translate([0, 0, -(coil_t  + pcb_seperation)])
+		translate([0, 0, -(coil_t  + pcb_seperation + coil_wire_t*2)])
 			pcb_holes();
 	}	
 }
 
 module pcb_holes(){
   translate([pcb_hole_l, pcb_hole_t, 0])
-    cylinder(r= pcb_hole_radius + t, h=thickness);
+   pcbHole();   
   translate([pcb_hole_r, pcb_hole_t, 0])
-    cylinder(r= pcb_hole_radius + t, h=thickness);
+   pcbHole();
   translate([pcb_hole_l, pcb_hole_b, 0])
-    cylinder(r= pcb_hole_radius + t, h=thickness);
+   pcbHole();
   translate([pcb_hole_r, pcb_hole_b, 0])
-    cylinder(r= pcb_hole_radius + t, h=thickness);
+   pcbHole();
+}
+
+module pcbHole(){
+	cylinder(r= pcb_hole_radius + t, h=thickness);
+	translate([0,0, -pcb_hole_bevel_depth+(coil_t  + pcb_seperation + coil_wire_t*2)])
+    		cylinder(r1= pcb_hole_radius + t, 
+		    		r2= pcb_hole_bevel_radius + t, 
+				h= pcb_hole_bevel_depth);
 }
 
 module magnets(){
