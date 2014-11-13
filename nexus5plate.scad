@@ -20,7 +20,7 @@ b_offest =  +23;
 closeness = 0.4; 
 
 //charging coil dimentions
-coil_d = 50;
+coil_d = 51;
 coil_t = 1;
 
 coil_wire_d=43;
@@ -34,9 +34,13 @@ pcb_t = 5;
 pcb_from_edge = 7;
 pcb_seperation = 1;
 
+pcb_usb_w = 10;
+pcb_usb_d = 5;
+
 //micro usb dimensions
 usb_w = 7;
 usb_h = 3;
+
 
 //pcb mount holes
 pcb_hole_radius= .5;
@@ -72,6 +76,8 @@ module body(){
 }
 
 module coilAssembly(){
+	wireWidth = 10*coil_wire_t + 2 * t;
+
 	translate([0, 0, closeness]){
 		translate([0, 0, coil_wire_t]){
 			translate([0, 0, coil_wire_t])
@@ -79,11 +85,13 @@ module coilAssembly(){
 
 			cylinder(d=coil_wire_d + 2 * t, h=thickness);		
 		}
-			translate([-coil_wire_t - t, 0, 0])
-				cube([2*coil_wire_t + 2 * t, coil_d/2 + coil_wire_t, coil_wire_t*2]);	
 
-			translate([-coil_wire_t - t, coil_d/2, 0])
-				cube([2*coil_wire_t + 2 * t, coil_wire_t, thickness + coil_wire_t*2]);		
+			// wire cutouts
+			translate([-wireWidth/2, 0, 0])
+				cube([wireWidth, coil_d/2 + coil_wire_t, thickness + coil_wire_t*2]);	
+
+			translate([-wireWidth/2, coil_d/2, 0])
+				cube([wireWidth, 3 * coil_wire_t, thickness + coil_wire_t*2]);		
 	}
 }
 
@@ -95,11 +103,16 @@ module pcbAssembly(){
 		translate([-pcb_w/2, -pcb_h/2 , 0])
 			cube([pcb_w, pcb_h, pcb_t + height]);
 
+		translate([-pcb_usb_w/2, -(pcb_h/2 + pcb_usb_d),0])
+			cube([pcb_usb_w, pcb_usb_d, 50 + t]);
+
 		translate([-usb_w/2, -pcb_h/2-10,0])
 			cube([usb_w, pcb_h, usb_h + t]);
 
 		translate([0, 0, -(coil_t  + pcb_seperation + coil_wire_t*2)])
 			pcb_holes();
+
+		
 	}	
 }
 
@@ -119,7 +132,7 @@ module pcbHole(){
 	translate([0,0, -pcb_hole_bevel_depth+(coil_t  + pcb_seperation + coil_wire_t*2)])
     		cylinder(r1= pcb_hole_radius + t, 
 		    		r2= pcb_hole_bevel_radius + t, 
-				h= pcb_hole_bevel_depth);
+				h= pcb_hole_bevel_depth + t);
 }
 
 module magnets(){
