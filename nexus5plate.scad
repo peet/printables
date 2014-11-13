@@ -43,14 +43,14 @@ usb_h = 3;
 
 
 //pcb mount holes
-pcb_hole_radius= .5;
-pcb_hole_bevel_radius=1;
+pcb_hole_radius= 0.75;
+pcb_hole_bevel_radius=2;
 pcb_hole_bevel_depth=1;
 
 pcb_hole_t= pcb_h/2 -3;
-pcb_hole_b= -(pcb_h/2 -9);
-pcb_hole_l=-(pcb_w/2 -2.5);
-pcb_hole_r=pcb_w/2 -2.5;
+pcb_hole_b= -(pcb_h/2 -9.5);
+pcb_hole_l=-(pcb_w/2 -3);
+pcb_hole_r=pcb_w/2 -3;
 
 //starting box dimensions
 width = max(pcb_w, coil_d) + 5;
